@@ -1,26 +1,26 @@
 #!/bin/bash
 
-apstraserver=10.28.207.3
-authtoken=`curl -k --location --request POST 'https://10.28.207.3/api/user/login' --header 'Content-Type: application/json' --data-raw '{
+apstraserver=127.0.0.1
+authtoken=`curl -k --location --request POST 'https://$apstraserver/api/user/login' --header 'Content-Type: application/json' --data-raw '{
   "username": "admin",
   "password": "admin"
 }' | awk '{print $2}' | sed s/[\"\,]//g`
 echo "authtoken is $authtoken"
-bpid=`curl -k --location --request GET 'https://10.28.207.3/api/blueprints/' --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
+bpid=`curl -k --location --request GET 'https://$apstraserver/api/blueprints/' --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
 echo "blueprint id is $bpid"
 
 get_bp_id() { #change me to change bp id
-authtoken=`curl -k --location --request POST 'https://10.28.207.3/api/user/login' --header 'Content-Type: application/json' --data-raw '{
+authtoken=`curl -k --location --request POST 'https://$apstraserver/api/user/login' --header 'Content-Type: application/json' --data-raw '{
   "username": "admin",
   "password": "admin"
 }' | awk '{print $2}' | sed s/[\"\,]//g`
 echo "authtoken is $authtoken"
-bpid=`curl -k --location --request GET 'https://10.28.207.3/api/blueprints/' --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
+bpid=`curl -k --location --request GET 'https://$apstraserver/api/blueprints/' --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
 echo "blueprint id is $bpid"
 read -s -p "New Blueprint Name:" newbpname
-bp_node_id=`curl -k --location --request GET 'https://10.28.207.3/api/blueprints/'$bpid --header "AUTHTOKEN: $authtoken" |jq --raw-output '.nodes[] | select(.design =="two_stage_l3clos") | .id'`  #get node id
+bp_node_id=`curl -k --location --request GET 'https://$apstraserver/api/blueprints/'$bpid --header "AUTHTOKEN: $authtoken" |jq --raw-output '.nodes[] | select(.design =="two_stage_l3clos") | .id'`  #get node id
 echo "\n node id is $bp_node_id"
-curl -k --location --request PATCH "https://10.28.207.3/api/blueprints/$bpid" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"nodes\": {\"$bp_node_id\" : { \"label\": \"$newbpname\"}}}"
+curl -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"nodes\": {\"$bp_node_id\" : { \"label\": \"$newbpname\"}}}"
 }
 
 breakcablemap() {
