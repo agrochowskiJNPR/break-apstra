@@ -31,8 +31,30 @@ intf1id=`echo $endpoints | jq --raw-output '.endpoints[0] .interface.id'`
 intf2id=`echo $endpoints | jq --raw-output '.endpoints[1] .interface.id'`
 echo $intf1id
 echo $intf2id
-curl -k --location --request PATCH "https://10.28.207.3/api/blueprints/evpn-vqfx_offbox-virtual/cabling-map" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"links\": [ {  \"endpoints\": [ { \"interface\": {  \"id\": \"$intf1id\", \"if_name\": "xe-0/0/5" } }, { \"interface\": { \"id\": \"$intf2id\" } } ], \"id\": \"spine1<->evpn_esi_001_leaf2[1]\" } ] }"
-
+#curl -k --location --request PATCH "https://10.28.207.3/api/blueprints/evpn-vqfx_offbox-virtual/cabling-map" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"links\": [ {  \"endpoints\": [ { \"interface\": {  \"id\": \"$intf1id\", \"if_name\": "xe-0/0/5" } }, { \"interface\": { \"id\": \"$intf2id\" } } ], \"id\": \"spine1<->evpn_esi_001_leaf2[1]\" } ] }"
+curl --location --request PATCH "https://$apstraserver/api/blueprints/$bpid/cabling-map" \
+--header "AUTHTOKEN: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiY3JlYXRlZF9hdCI6IjIwMjItMTEtMThUMTQ6MTk6MTEuODk3Njg5IiwidXNlcl9zZXNzaW9uIjoiYTIwNDBlOWYtZDg0NS00NzA4LTg0MmItZWY0NWNkMDdhOGY1IiwiZXhwIjoxNjY4ODY3NTUxfQ.KjfdYFLq1rfGVGb0cBkC4geEgKD8XM3E10Nqtx0OIwete3dqR5lxTcGSnCuQRauASBiEy4LScP3EJSOfO5sIXw" \
+--header "Content-Type: application/json" \
+--data-raw " {
+    \"links\": [
+      {
+        \"endpoints\": [
+          {
+            \"interface\": {
+              \"id\": \"aOtLsoVNM6qc1zHRQ_A\",
+              \"if_name\": \"xe-0/0/5\"
+            }
+          },
+          {
+            \"interface\": {
+              \"id\": \"GKcOhXTj-b1ArBm6DAE\"
+            }
+          }
+        ],
+        \"id\": \"spine1<->evpn_esi_001_leaf2[1]\"
+      }
+    ]
+  }"
 sleep 14
 }
 
