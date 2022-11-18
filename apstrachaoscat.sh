@@ -16,8 +16,13 @@ curl -k --location --request PATCH "https://10.28.207.3/api/blueprints/$bpid" --
 }
 
 breakcablemap() {
-echo $apstraserver
-
+authtoken=`curl -k --location --request POST 'https://10.28.207.3/api/user/login' --header 'Content-Type: application/json' --data-raw '{
+  "username": "admin",
+  "password": "admin"
+}' | awk '{print $2}' | sed s/[\"\,]//g`
+echo "authtoken is $authtoken"
+bpid=`curl -k --location --request GET 'https://10.28.207.3/api/blueprints/' --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
+echo "blueprint id is $bpid"
 endpoints=`curl -k --location --request GET "https://$apstraserver/api/blueprints/$bpid/experience/web/cabling-map" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq '.links[] | select(.label == "spine1<->evpn_esi_001_leaf2[1]") | {endpoints}'`
 echo $endpoints 
 sleep 40
