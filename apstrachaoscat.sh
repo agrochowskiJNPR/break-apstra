@@ -1,6 +1,6 @@
 #!/bin/bash
 
-
+apstraserver=10.28.207.3
 get_bp_id() {
 authtoken=`curl -k --location --request POST 'https://10.28.207.3/api/user/login' --header 'Content-Type: application/json' --data-raw '{
   "username": "admin",
@@ -50,6 +50,7 @@ items=(1 "Enter Apstra Password"
        2 "Change Blueprint Name"
        3 "Commit a Change"
        4 "Config Deviation Anomoly"
+       5 "Break Cabling Map"
        5 "VLAN ID Mismatch"
        6 "Imbalance Probes"
        7 "roll back everything"
@@ -64,6 +65,7 @@ while choice=$(dialog --title "$TITLE" \
 	2) get_bp_id; sleep 3 ;; # some action on 2
 	3) dialog --infobox "bp id is $bpid" 10 20 ;sleep 4 ;;
 	4) dialog --infobox "password is $password" 10 20; sleep 4 ;;
+	5) breakcablemap ; sleep 4 ;;
         *) ;; # some action on other
     esac
 done
