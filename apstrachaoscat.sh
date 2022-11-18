@@ -31,26 +31,8 @@ echo $endpoints
 intf1id=`echo $endpoints | jq '.endpoints[0] .interface.id'`
 intf2id=`echo $endpoints | jq '.endpoints[1] .interface.id'`
 
-curl -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid/cabling-map" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw " {
-    \"links\": [
-      {
-        \"endpoints\": [
-          {
-            \"interface\": {
-              \"id\": \"$intf1id\",
-              \"if_name\": \"xe-0/0/5\"
-            }
-          },
-          {
-            \"interface\": {
-              \"id\": \"$intf2id\"
-            }
-          }
-        ],
-        \"id\": \"spine1<->evpn_esi_001_leaf2[1]\"
-      }
-    ]
-  }"
+curl -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid/cabling-map" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw " { \"links\": [ { \"endpoints\": [ { \"interface\": { \"id\": \"$intf1id\", \"if_name\": \"xe-0/0/5\" } }, { \"interface\": { \"id\": \"$intf2id\" } } ], \"id\": \"spine1<->evpn_esi_001_leaf2[1]\" } ] }"
+  
 sleep 14
 }
 
