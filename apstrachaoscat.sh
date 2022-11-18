@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apstraserver=127.0.0.1
+apstraserver="127.0.0.1"
 authtoken=`curl -k --location --request POST 'https://$apstraserver/api/user/login' --header 'Content-Type: application/json' --data-raw '{
   "username": "admin",
   "password": "admin"
