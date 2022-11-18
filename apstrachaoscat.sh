@@ -15,7 +15,34 @@ echo "\n node id is $bp_node_id"
 curl -k --location --request PATCH "https://10.28.207.3/api/blueprints/$bpid" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"nodes\": {\"$bp_node_id\" : { \"label\": \"$newbpname\"}}}"
 }
 
+breakcablemap() {
+endpoints=`curl --location --request GET "https://$apstraserver/api/blueprints/$bpid/experience/web/cabling-map" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq '.links[] | select(.label == "spine1<->evpn_esi_001_leaf2[1]") | {endpoints}'`
 
+intf1id=`echo $endpoints | jq '.endpoints[0] .interface.id'`
+intf2id=`echo $endpoints | jq '.endpoints[1] .interface.id'`
+
+curl --location --request PATCH "https://$apstraserver/api/blueprints/$bpid/cabling-map" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw " {
+    \"links\": [
+      {
+        \"endpoints\": [
+          {
+            \"interface\": {
+              \"id\": \"$intf1id\",
+              \"if_name\": \"xe-0/0/5\"
+            }
+          },
+          {
+            \"interface\": {
+              \"id\": \"$intf2id\"
+            }
+          }
+        ],
+        \"id\": \"spine1<->evpn_esi_001_leaf2[1]\"
+      }
+    ]
+  }"
+
+}
 
 TITLE="How Would You Like to Break Apstra Today?"
 	
