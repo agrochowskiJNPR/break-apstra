@@ -39,13 +39,13 @@ curl -k --location --request PATCH "https://10.28.207.3/api/blueprints/evpn-vqfx
         \"endpoints\": [
           {
             \"interface\": {
-              \"id\": \"aOtLsoVNM6qc1zHRQ_A\",
+              \"id\": \"$intf1id\",
               \"if_name\": \"xe-0/0/5\"
             }
           },
           {
             \"interface\": {
-              \"id\": \"GKcOhXTj-b1ArBm6DAE\"
+              \"id\": \"$intf2id\"
             }
           }
         ],
