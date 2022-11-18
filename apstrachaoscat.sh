@@ -51,7 +51,7 @@ curl -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid/c
       }
     ]
   }"
-sleep 15
+sleep 14
 }
 
 TITLE="How Would You Like to Break Apstra Today?"
