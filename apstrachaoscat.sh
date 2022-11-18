@@ -27,7 +27,6 @@ breakcablemap() {
 
 endpoints=`curl -k --location --request GET "https://$apstraserver/api/blueprints/$bpid/experience/web/cabling-map" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq '.links[] | select(.label == "spine1<->evpn_esi_001_leaf2[1]") | {endpoints}'`
 echo $endpoints 
-sleep 40
 
 intf1id=`echo $endpoints | jq '.endpoints[0] .interface.id'`
 intf2id=`echo $endpoints | jq '.endpoints[1] .interface.id'`
@@ -52,7 +51,7 @@ curl -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid/c
       }
     ]
   }"
-
+sleep 15
 }
 
 TITLE="How Would You Like to Break Apstra Today?"
