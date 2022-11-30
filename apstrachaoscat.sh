@@ -65,9 +65,9 @@ items=(1 "Enter Apstra Password"
        3 "Commit a Change"
        4 "Config Deviation Anomoly"
        5 "Break Cabling Map"
-       5 "VLAN ID Mismatch"
-       6 "Imbalance Probes"
-       7 "roll back everything"
+       6 "VLAN ID Mismatch"
+       7 "Imbalance Probes"
+       8 "roll back everything"
        )
 
 while choice=$(dialog --title "$TITLE" \
