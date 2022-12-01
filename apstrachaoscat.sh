@@ -72,9 +72,6 @@ items=(1 "*nw Enter Apstra Password"
        3 "Config Deviation Anomoly - Disable Interface"
        4 "*nw Commit a Change"
        5 "Break Cabling Map"
-       6 "*nw VLAN ID Mismatch"
-       7 "*nw Imbalance Probes"
-       8 "*nw roll back everything"
        )
 
 while choice=$(dialog --title "$TITLE" \
