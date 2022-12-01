@@ -65,12 +65,16 @@ read -s -p "Enter Spine1 IP:" spine1_ip
 ( echo 'conf';echo 'set int xe-0/0/01 disable';echo 'commit and-quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$spine1_ip" "cli"
 sleep 3
 }
+
+commit() {
+commitversion=`curl -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid/deploy" --header "AUTHTOKEN: $authtoken" | jq .version --raw-output`
+}
 TITLE="How Would You Like to Break Your Environment Today?"
 	
 items=(1 "*nw Enter Apstra Password"
        2 "Change Blueprint Name"
        3 "Config Deviation Anomoly - Disable Interface"
-       4 "*nw Commit a Change"
+       4 "Run a Commit"
        5 "Break Cabling Map"
        )
 
@@ -82,7 +86,7 @@ while choice=$(dialog --title "$TITLE" \
         1) password=`dialog --title "Password" --clear --passwordbox "Enter your password" 10 30 2`  ;; #read -s -p "Password: " password ;;
 	2) get_bp_id; sleep 3 ;; # some action on 2
 	3) disableint ;sleep 4 ;;
-	4) dialog --infobox "password is $password" 10 20; sleep 4 ;;
+	4) commit; sleep 1 ;;
 	5) breakcablemap ; sleep 4 ;;
         *) ;; # some action on other
     esac
