@@ -58,16 +58,23 @@ curl -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid/c
 sleep 14
 }
 
-TITLE="How Would You Like to Break Apstra Today?"
+disableint() {
+ swip=`dialog --title "spine1 IP?" --clear --inputbox "Enter Spine1 IP" 10 30 2`
+ echo "spine1 ip is $swip"
+ sleep 3
+( echo ‘conf’;echo ‘set int xe-0/0/01 disable’;echo ‘commit and-quit’ ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@$swip “cli”
+sleep 3
+}
+TITLE="How Would You Like to Break Your Environment Today?"
 	
-items=(1 "Enter Apstra Password"
+items=(1 "*nw Enter Apstra Password"
        2 "Change Blueprint Name"
-       3 "Commit a Change"
-       4 "Config Deviation Anomoly"
+       3 "*nw Commit a Change"
+       4 "Config Deviation Anomoly - Disable Interface"
        5 "Break Cabling Map"
-       6 "VLAN ID Mismatch"
-       7 "Imbalance Probes"
-       8 "roll back everything"
+       6 "*nw VLAN ID Mismatch"
+       7 "*nw Imbalance Probes"
+       8 "*nw roll back everything"
        )
 
 while choice=$(dialog --title "$TITLE" \
@@ -77,7 +84,7 @@ while choice=$(dialog --title "$TITLE" \
     case $choice in
         1) password=`dialog --title "Password" --clear --passwordbox "Enter your password" 10 30 2`  ;; #read -s -p "Password: " password ;;
 	2) get_bp_id; sleep 3 ;; # some action on 2
-	3) dialog --infobox "bp id is $bpid" 10 20 ;sleep 4 ;;
+	3) disableint ;sleep 4 ;;
 	4) dialog --infobox "password is $password" 10 20; sleep 4 ;;
 	5) breakcablemap ; sleep 4 ;;
         *) ;; # some action on other
