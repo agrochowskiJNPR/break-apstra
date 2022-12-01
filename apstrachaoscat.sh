@@ -60,8 +60,8 @@ sleep 14
 
 disableint() {
  swip=`dialog --title "spine1 IP?" --clear --inputbox "Enter Spine1 IP" 10 30 2`
+  sleep 3
  echo "spine1 ip is $swip"
- sleep 3
 ( echo ‘conf’;echo ‘set int xe-0/0/01 disable’;echo ‘commit and-quit’ ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@$swip “cli”
 sleep 3
 }
