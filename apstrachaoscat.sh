@@ -62,7 +62,7 @@ disableint() {
 read -s -p "Enter Spine1 IP:" spine1_ip
   sleep 3
  echo "spine1 ip is $spine1_ip"
-( echo ‘conf’;echo ‘set int xe-0/0/01 disable’;echo ‘commit and-quit’ ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@$spine1_ip “cli”
+( echo 'conf';echo 'set int xe-0/0/01 disable';echo 'commit and-quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@spine1_ip "cli"
 sleep 3
 }
 TITLE="How Would You Like to Break Your Environment Today?"
