@@ -65,7 +65,13 @@ read -s -p "Enter Spine1 IP:" spine1_ip
 ( echo 'conf';echo 'set int xe-0/0/01 disable';echo 'commit and-quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$spine1_ip" "cli"
 sleep 3
 }
-
+changeswasn() {
+read -s -p "Enter IP of desired switch to mess up:" switch_ip
+  sleep 3
+ echo "entered switch ip is $switch_ip"
+( echo 'conf';echo 'set routing-options autonomous-system 645135';echo 'commit and-quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
+sleep 3
+}
 commit() {
 commitversion=`curl -k --location --request PUT "https://$apstraserver/api/blueprints/$bpid/deploy" --header "AUTHTOKEN: $authtoken" | jq .version --raw-output`
 curl -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/revisions/$commitversion/keep" --header "AUTHTOKEN: $authtoken" -header "Content-Type: application/json" --data-raw "{ \"description\": \"Saved by Apstra Chaos Cat at `date` \"}"
@@ -77,6 +83,7 @@ items=(1 "*nw Enter Apstra Password"
        3 "Config Deviation Anomoly - Disable Interface"
        4 "Run a Commit"
        5 "Break Cabling Map"
+       6 "Change the ASN of a device"
        )
 
 while choice=$(dialog --title "$TITLE" \
@@ -89,6 +96,7 @@ while choice=$(dialog --title "$TITLE" \
 	3) disableint ;sleep 4 ;;
 	4) commit; sleep 1 ;;
 	5) breakcablemap ; sleep 4 ;;
+	6) changeswasn ; sleep 4 ;;
         *) ;; # some action on other
     esac
 done
