@@ -55,33 +55,33 @@ curl -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid/c
       }
     ]
   }"
-sleep 14
+sleep 2
 }
 
 disableint() {
 read -s -p "Enter Spine1 IP:" spine1_ip
-  sleep 3
+  sleep 4
  echo "spine1 ip is $spine1_ip"
 ( echo 'conf';echo 'set int xe-0/0/01 disable';echo 'commit and-quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$spine1_ip" "cli"
-sleep 3
+sleep 2
 }
 changeswasn() {
 read -s -p "Enter IP of desired switch to mess up:" switch_ip
-  sleep 3
+  sleep 4
  echo "entered switch ip is $switch_ip"
 ( echo 'conf';echo 'set routing-options autonomous-system 645135';echo 'commit and-quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
-sleep 3
+sleep 2
 }
 savetv() {
 commitversion=`curl -k --location --request GET "https://$apstraserver/api/blueprints/$bpid/deploy" --header "AUTHTOKEN: $authtoken" | jq .version --raw-output`
 echo "version is $commitversion"
-sleep 3
+sleep 1
 curl -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/revisions/$commitversion/keep" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"description\": \"Saved by Apstra Chaos Cat at `date` \"}"
 }
 setstaticrt() {
 ( 
 read -s -p "Enter IP of desired switch to add "routing-options static route 7.7.7.7/32 next-hop 8.8.8.8" to:" switch_ip
-  sleep 3
+  sleep 1
  echo "entered switch ip is $switch_ip"
 echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$spine1_ip" "cli"
 }
