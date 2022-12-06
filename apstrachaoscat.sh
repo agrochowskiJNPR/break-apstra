@@ -72,20 +72,24 @@ read -s -p "Enter IP of desired switch to mess up:" switch_ip
 ( echo 'conf';echo 'set routing-options autonomous-system 645135';echo 'commit and-quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
 sleep 3
 }
-commit() {
-commitversion=`curl -k --location --request PUT "https://$apstraserver/api/blueprints/$bpid/deploy" --header "AUTHTOKEN: $authtoken" | jq .version --raw-output`
+savetv() {
+commitversion=`curl -k --location --request GET "https://$apstraserver/api/blueprints/$bpid/deploy" --header "AUTHTOKEN: $authtoken" | jq .version --raw-output`
 echo "version is $commitversion"
 sleep 3
 curl -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/revisions/$commitversion/keep" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"description\": \"Saved by Apstra Chaos Cat at `date` \"}"
+}
+setstaticrt() {
+( echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$spine1_ip" "cli"
 }
 TITLE="How Would You Like to Break Your Environment Today?"
 	
 items=(1 "*nw Enter Apstra Password"
        2 "Change Blueprint Name"
        3 "Config Deviation Anomoly - Disable Interface"
-       4 "Run a Commit"
+       4 "Save Current Blueprint"
        5 "Break Cabling Map"
        6 "Change the ASN of a device"
+       7 "Add a random static route to switch"
        )
 
 while choice=$(dialog --title "$TITLE" \
@@ -96,9 +100,10 @@ while choice=$(dialog --title "$TITLE" \
         1) password=`dialog --title "Password" --clear --passwordbox "Enter your password" 10 30 2`  ;; #read -s -p "Password: " password ;;
 	2) get_bp_id; sleep 3 ;; # some action on 2
 	3) disableint ;sleep 4 ;;
-	4) commit; sleep 1 ;;
+	4) savetv; sleep 1 ;;
 	5) breakcablemap ; sleep 4 ;;
 	6) changeswasn ; sleep 4 ;;
+	7) setstaticrt ; sleep 2 ;;
         *) ;; # some action on other
     esac
 done
