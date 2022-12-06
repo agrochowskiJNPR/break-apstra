@@ -79,7 +79,11 @@ sleep 3
 curl -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/revisions/$commitversion/keep" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"description\": \"Saved by Apstra Chaos Cat at `date` \"}"
 }
 setstaticrt() {
-( echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$spine1_ip" "cli"
+( 
+read -s -p "Enter IP of desired switch to add "routing-options static route 7.7.7.7/32 next-hop 8.8.8.8" to:" switch_ip
+  sleep 3
+ echo "entered switch ip is $switch_ip"
+echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$spine1_ip" "cli"
 }
 TITLE="How Would You Like to Break Your Environment Today?"
 	
