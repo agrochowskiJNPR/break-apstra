@@ -111,7 +111,7 @@ echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8' 
 flapif() {
 getswitchinfo
 echo "NB: This is a pretty bad hack, and will continue rapidly flapping the interface until you hit Control-C.  Please also be advised that it might leave the IF in a down state when you do stop it. If that happens either reboot the switch, or login and kill flap.sh (ps aux | grep flap.sh, and kill the PID)"
- (echo 'echo "while true;do ifconfig xe-0/0/0 down;ifconfig xe-0/0/0 up; done"> flap.sh';echo 'sh ./flap.sh') | ssh -o StrictHostKeyChecking=no root@$switch_ip sh
+ (echo 'echo "while true;do ifconfig xe-0/0/0 down;ifconfig xe-0/0/0 up; done"> flap.sh';echo 'sh ./flap.sh') | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@$switch_ip sh
 }
 TITLE="How Would You Like to Break Your Environment Today?"
 	
