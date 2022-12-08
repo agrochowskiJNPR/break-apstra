@@ -44,7 +44,6 @@ do
             selected_switch="$target"
 	    switch_ip=`curl -k --location --request GET "https://$apstraserver/api/systems/$selected_systemid" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq -r '.facts .mgmt_ipaddr'`
             echo "$selected_switch system id is $selected_systemid and has IP $switch_ip"
-
 	   ;;
     esac
 done
@@ -89,16 +88,12 @@ sleep 2
 }
 
 disableint() {
-read -s -p "Enter Spine1 IP:" spine1_ip
-  sleep 4
- echo "spine1 ip is $spine1_ip"
-( echo 'conf';echo 'set int xe-0/0/01 disable';echo 'commit and-quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$spine1_ip" "cli"
+getswitchinfo
+( echo 'conf';echo 'set int xe-0/0/01 disable';echo 'commit and-quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
 sleep 2
 }
 changeswasn() {
-read -s -p "Enter IP of desired switch to mess up:" switch_ip
-  sleep 4
- echo "entered switch ip is $switch_ip"
+getswitchinfo
 ( echo 'conf';echo 'set routing-options autonomous-system 645135';echo 'commit and-quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
 sleep 2
 }
@@ -110,10 +105,8 @@ curl -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/re
 }
 setstaticrt() {
 ( 
-read -s -p "Enter IP of desired switch to add "routing-options static route 7.7.7.7/32 next-hop 8.8.8.8" to:" switch_ip
-  sleep 1
- echo "entered switch ip is $switch_ip"
-echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$spine1_ip" "cli"
+getswitchinfo
+echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
 }
 TITLE="How Would You Like to Break Your Environment Today?"
 	
