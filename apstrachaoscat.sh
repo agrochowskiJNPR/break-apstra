@@ -132,7 +132,7 @@ items=(1 "Change Blueprint Name"
        )
 
 while choice=$(dialog --title "$TITLE" \
-                 --menu "Please select" 50 80 8 "${items[@]}" \
+                 --menu "Please select" 50 80 12 "${items[@]}" \
                  2>&1 >/dev/tty)
     do
     case $choice in
