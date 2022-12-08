@@ -106,6 +106,7 @@ items=(1 "*nw Enter Apstra Password"
        5 "Break Cabling Map"
        6 "Change the ASN of a device"
        7 "Add a random static route to switch"
+       8 "List Switch IPs"
        )
 
 while choice=$(dialog --title "$TITLE" \
@@ -120,6 +121,7 @@ while choice=$(dialog --title "$TITLE" \
 	5) breakcablemap ; sleep 4 ;;
 	6) changeswasn ; sleep 4 ;;
 	7) setstaticrt ; sleep 2 ;;
+	8) getswitchinfo ; sleep 3 ;;
         *) ;; # some action on other
     esac
 done
