@@ -25,8 +25,7 @@ curl -s -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpi
 
 getswitchinfo() {
 declare -A switches `curl -s -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/qe?type=staging" \
---header "AUTHTOKEN: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiY3JlYXRlZF9hdCI6IjIwMjItMTItMDhUMTU6MjA6MzguMDAyMDQ4IiwidXNlcl9zZXNzaW9uIjoiYTIwNDBlOWYtZDg0NS00NzA4LTg0MmItZWY0NWNkMDdhOGY1IiwiZXhwIjoxNjcwNTk5MjM4fQ.VDkTJq1_8GaXS8xIvn1Mr61pOtJInAQDMJkwnOvHGHZ05tvsF88AFFXwhmAJoSbGFaQzuZ1rcOx1zrBMH3S2hQ" --header "Content-Type: application/json" --data-raw "{
-  \"query\": \"match(node('system', name='system', role=is_in(['leaf', 'access', 'spine', 'superspine'])))\"}" | jq -r '.items[].system | "switches" + "[" + .label + "]" + "=" + .system_id' |tr '\n' ' '`
+--header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"query\": \"match(node('system', name='system', role=is_in(['leaf', 'access', 'spine', 'superspine'])))\"}" | jq -r '.items[].system | "switches" + "[" + .label + "]" + "=" + .system_id' |tr '\n' ' '`
 
 MENU_OPTIONS=
 COUNT=0
@@ -99,7 +98,7 @@ getswitchinfo
 sleep 2
 }
 savetv() {
-commitversion=`curl -k --location --request GET "https://$apstraserver/api/blueprints/$bpid/deploy" --header "AUTHTOKEN: $authtoken" | jq .version --raw-output`
+commitversion=`curl -s -k --location --request GET "https://$apstraserver/api/blueprints/$bpid/deploy" --header "AUTHTOKEN: $authtoken" | jq .version --raw-output`
 echo "version is $commitversion"
 sleep 1
 curl -s -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/revisions/$commitversion/keep" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"description\": \"Saved by Apstra Chaos Cat at `date` \"}"
@@ -111,14 +110,13 @@ echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8' 
 }
 TITLE="How Would You Like to Break Your Environment Today?"
 	
-items=(1 "*nw Enter Apstra Password"
-       2 "Change Blueprint Name"
-       3 "Config Deviation Anomoly - Disable Interface"
-       4 "Save Current Blueprint"
-       5 "Break Cabling Map"
-       6 "Change the ASN of a device"
-       7 "Add a random static route to switch"
-       8 "List Switch IPs"
+items=(1 "Change Blueprint Name"
+       2 "Disable switch Interface (xe-0/0/0)"
+       3 "Save Current Blueprint Version"
+       4 "Break Cabling Map"
+       5 "Change the ASN of a device"
+       6 "Add a static route to a device"
+       7 "List Switch IPs"
        )
 
 while choice=$(dialog --title "$TITLE" \
@@ -126,14 +124,13 @@ while choice=$(dialog --title "$TITLE" \
                  2>&1 >/dev/tty)
     do
     case $choice in
-        1) password=`dialog --title "Password" --clear --passwordbox "Enter your password" 10 30 2`  ;; #read -s -p "Password: " password ;;
-	2) get_bp_id; sleep 3 ;; # some action on 2
-	3) disableint ;sleep 4 ;;
-	4) savetv; sleep 1 ;;
-	5) breakcablemap ; sleep 4 ;;
-	6) changeswasn ; sleep 4 ;;
-	7) setstaticrt ; sleep 2 ;;
-	8) getswitchinfo ; sleep 3 ;;
+	1) get_bp_id; sleep 3 ;; # some action on 2
+	2) disableint ;sleep 4 ;;
+	3) savetv; sleep 1 ;;
+	4) breakcablemap ; sleep 4 ;;
+	5) changeswasn ; sleep 4 ;;
+	6) setstaticrt ; sleep 2 ;;
+	7) getswitchinfo ; sleep 3 ;;
         *) ;; # some action on other
     esac
 done
