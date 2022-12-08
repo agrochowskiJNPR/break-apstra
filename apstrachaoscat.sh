@@ -1,30 +1,30 @@
 #!/bin/bash
 
 apstraserver="127.0.0.1"
-authtoken=`curl -k --location --request POST "https://$apstraserver/api/user/login" --header 'Content-Type: application/json' --data-raw '{
+authtoken=`curl -s -k --location --request POST "https://$apstraserver/api/user/login" --header 'Content-Type: application/json' --data-raw '{
   "username": "admin",
   "password": "admin"
 }' | awk '{print $2}' | sed s/[\"\,]//g`
 echo "authtoken is $authtoken"
-bpid=`curl -k --location --request GET "https://$apstraserver/api/blueprints/" --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
+bpid=`curl -s -k --location --request GET "https://$apstraserver/api/blueprints/" --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
 echo "blueprint id is $bpid"
 
 get_bp_id() { #change me to change bp id
-authtoken=`curl -k --location --request POST "https://$apstraserver/api/user/login" --header 'Content-Type: application/json' --data-raw '{
+authtoken=`curl -s -k --location --request POST "https://$apstraserver/api/user/login" --header 'Content-Type: application/json' --data-raw '{
   "username": "admin",
   "password": "admin"
 }' | awk '{print $2}' | sed s/[\"\,]//g`
 echo "authtoken is $authtoken"
-bpid=`curl -k --location --request GET "https://$apstraserver/api/blueprints/" --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
+bpid=`curl -s -k --location --request GET "https://$apstraserver/api/blueprints/" --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
 echo "blueprint id is $bpid"
 read -s -p "New Blueprint Name:" newbpname
-bp_node_id=`curl -k --location --request GET "https://$apstraserver/api/blueprints/$bpid" --header "AUTHTOKEN: $authtoken" |jq --raw-output '.nodes[] | select(.design =="two_stage_l3clos") | .id'`  #get node id
+bp_node_id=`curl -s -k --location --request GET "https://$apstraserver/api/blueprints/$bpid" --header "AUTHTOKEN: $authtoken" |jq --raw-output '.nodes[] | select(.design =="two_stage_l3clos") | .id'`  #get node id
 echo "\n node id is $bp_node_id"
-curl -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"nodes\": {\"$bp_node_id\" : { \"label\": \"$newbpname\"}}}"
+curl -s -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"nodes\": {\"$bp_node_id\" : { \"label\": \"$newbpname\"}}}"
 }
 
 getswitchinfo() {
-declare -A switches `curl -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/qe?type=staging" \
+declare -A switches `curl -s -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/qe?type=staging" \
 --header "AUTHTOKEN: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiY3JlYXRlZF9hdCI6IjIwMjItMTItMDhUMTU6MjA6MzguMDAyMDQ4IiwidXNlcl9zZXNzaW9uIjoiYTIwNDBlOWYtZDg0NS00NzA4LTg0MmItZWY0NWNkMDdhOGY1IiwiZXhwIjoxNjcwNTk5MjM4fQ.VDkTJq1_8GaXS8xIvn1Mr61pOtJInAQDMJkwnOvHGHZ05tvsF88AFFXwhmAJoSbGFaQzuZ1rcOx1zrBMH3S2hQ" --header "Content-Type: application/json" --data-raw "{
   \"query\": \"match(node('system', name='system', role=is_in(['leaf', 'access', 'spine', 'superspine'])))\"}" | jq -r '.items[].system | "switches" + "[" + .label + "]" + "=" + .system_id' |tr '\n' ' '`
 
@@ -44,7 +44,8 @@ do
             selected_switch="$target"
 	    switch_ip=`curl -k --location --request GET "https://$apstraserver/api/systems/$selected_systemid" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq -r '.facts .mgmt_ipaddr'`
             echo "$selected_switch system id is $selected_systemid and has IP $switch_ip"
-	   ;;
+	    break
+	    ;;
     esac
 done
 }
@@ -54,14 +55,14 @@ done
 
 breakcablemap() {
 
-endpoints=`curl -k --location --request GET "https://$apstraserver/api/blueprints/$bpid/experience/web/cabling-map" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq '.links[] | select(.label == "spine1<->evpn_esi_001_leaf2[1]") | {endpoints}'`
+endpoints=`curl -s -k --location --request GET "https://$apstraserver/api/blueprints/$bpid/experience/web/cabling-map" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq '.links[] | select(.label == "spine1<->evpn_esi_001_leaf2[1]") | {endpoints}'`
 
 intf1id=`echo $endpoints | jq --raw-output '.endpoints[0] .interface.id'`
 intf2id=`echo $endpoints | jq --raw-output '.endpoints[1] .interface.id'`
 echo $intf1id
 echo $intf2id
 
-curl -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid/cabling-map" \
+curl -s -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid/cabling-map" \
 --header "AUTHTOKEN: $authtoken" \
 --header "Content-Type: application/json" \
 --data-raw " {
@@ -101,7 +102,7 @@ savetv() {
 commitversion=`curl -k --location --request GET "https://$apstraserver/api/blueprints/$bpid/deploy" --header "AUTHTOKEN: $authtoken" | jq .version --raw-output`
 echo "version is $commitversion"
 sleep 1
-curl -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/revisions/$commitversion/keep" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"description\": \"Saved by Apstra Chaos Cat at `date` \"}"
+curl -s -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/revisions/$commitversion/keep" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"description\": \"Saved by Apstra Chaos Cat at `date` \"}"
 }
 setstaticrt() {
 ( 
