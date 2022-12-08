@@ -108,6 +108,11 @@ setstaticrt() {
 getswitchinfo
 echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
 }
+flapif() {
+getswitchinfo
+echo "NB: This is untested, and will continue rapidly flapping the interface until you hit Control-C.  Please also be advised that it might leave the IF in a down state when you do stop it."
+ (echo 'echo "while true;do ifconfig xe-0/0/0 down;ifconfig xe-0/0/0 up; done"> flap.sh';echo 'sh ./flap.sh') | ssh -o StrictHostKeyChecking=no root@$switch_ip sh
+}
 TITLE="How Would You Like to Break Your Environment Today?"
 	
 items=(1 "Change Blueprint Name"
@@ -117,6 +122,7 @@ items=(1 "Change Blueprint Name"
        5 "Change the ASN of a device"
        6 "Add a static route to a device"
        7 "List Switch IPs"
+       8 "Flap xe-0/0/0 on selected device"
        )
 
 while choice=$(dialog --title "$TITLE" \
@@ -130,7 +136,8 @@ while choice=$(dialog --title "$TITLE" \
 	4) breakcablemap ; sleep 4 ;;
 	5) changeswasn ; sleep 4 ;;
 	6) setstaticrt ; sleep 2 ;;
-	7) getswitchinfo ; sleep 3 ;;
+	7) getswitchinfo ;  ;;
+	8)flapif ; sleep 2 ;;
         *) ;; # some action on other
     esac
 done
