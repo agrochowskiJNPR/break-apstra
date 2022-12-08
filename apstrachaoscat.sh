@@ -137,7 +137,7 @@ while choice=$(dialog --title "$TITLE" \
 	5) changeswasn ; sleep 4 ;;
 	6) setstaticrt ; sleep 2 ;;
 	7) getswitchinfo ;  ;;
-	8)flapif ; sleep 2 ;;
+	8) flapif ; sleep 2 ;;
         *) ;; # some action on other
     esac
 done
