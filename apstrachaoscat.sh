@@ -42,7 +42,7 @@ do
         *)
             selected_systemid=${switches["$target"]}
             selected_switch="$target"
-	    $switch_ip = `curl --location --request GET "https://$apstraserver/api/systems/$selected_systemid" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq -r '.facts .mgmt_ipaddr'`
+	    $switch_ip = `curl -k --location --request GET "https://$apstraserver/api/systems/$selected_systemid" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq -r '.facts .mgmt_ipaddr'`
             echo "$selected_switch system id is $selected_systemid and has IP $switch_ip"
 
 	   ;;
