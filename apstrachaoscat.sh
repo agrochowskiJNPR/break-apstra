@@ -26,9 +26,10 @@ curl -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid" 
 getswitchinfo() {
 declare -A switches `curl --location --request POST "https://$apstraserver/api/blueprints/$bpid/qe?type=staging" \
 --header "AUTHTOKEN: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiY3JlYXRlZF9hdCI6IjIwMjItMTItMDhUMTU6MjA6MzguMDAyMDQ4IiwidXNlcl9zZXNzaW9uIjoiYTIwNDBlOWYtZDg0NS00NzA4LTg0MmItZWY0NWNkMDdhOGY1IiwiZXhwIjoxNjcwNTk5MjM4fQ.VDkTJq1_8GaXS8xIvn1Mr61pOtJInAQDMJkwnOvHGHZ05tvsF88AFFXwhmAJoSbGFaQzuZ1rcOx1zrBMH3S2hQ" --header "Content-Type: application/json" --data-raw "{
-  \"query\": \"match(node('system', name='system', role=is_in(['leaf', 'access', 'spine', 'superspine'])))\"}" | jq -r '.items[].system | .label + ": " + .system_id' | tr '\n' ' '`
+  \"query\": \"match(node('system', name='system', role=is_in(['leaf', 'access', 'spine', 'superspine'])))\"}" | jq -r '.items[].system | "switch" + "[" + .label + "]" + "=" + .system_id' |tr '\n' ' '`
 
-echo ${switch[leaf3]}
+echo "${switch[leaf3]}"
+for key in "${!switches[@]}"; do echo "$key - ${switches[$key]}";done
 sleep 5
 }
 
