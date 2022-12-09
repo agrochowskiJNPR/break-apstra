@@ -103,6 +103,19 @@ echo "version is $commitversion"
 sleep 1
 curl -s -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/revisions/$commitversion/keep" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"description\": \"Saved by Apstra Chaos Cat at `date` \"}"
 }
+commitcurrent()
+{
+commitversion=`curl -s -k --location --request GET "https://$apstraserver/api/blueprints/$bpid/deploy" --header "AUTHTOKEN: $authtoken" | jq .version --raw-output`
+echo "version is $commitversion"
+curl -s -k --location -g --request PUT "https://$apstraserver/api/$bpid/deploy" \
+--header "AUTHTOKEN: $authtoken" \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "version": "$commitversion",
+    "description": "committed by Apstra Chaos Cat at `date`"
+}'
+}
+
 setstaticrt() {
 ( 
 getswitchinfo
@@ -129,6 +142,7 @@ items=(1 "Change Blueprint Name"
        7 "List Switch IPs"
        8 "Flap xe-0/0/0 on selected device"
        9 "Ramp a device CPU to raise device Health anomaly"
+       10 "Run a Commit"
        )
 
 while choice=$(dialog --title "$TITLE" \
@@ -145,6 +159,7 @@ while choice=$(dialog --title "$TITLE" \
 	7) getswitchinfo ;  ;;
 	8) flapif ; sleep 2 ;;
 	9) rampcpu ; ;; 
+	10) commitcurrent ; ;;
         *) ;; # some action on other
     esac
 done
