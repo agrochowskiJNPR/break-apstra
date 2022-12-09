@@ -159,7 +159,7 @@ while choice=$(dialog --title "$TITLE" \
 	7) getswitchinfo ;  ;;
 	8) flapif ; sleep 2 ;;
 	9) rampcpu ; ;; 
-	10) commitcurrent ; ;;
+	10) commitcurrent ; sleep 5 ;;
         *) ;; # some action on other
     esac
 done
