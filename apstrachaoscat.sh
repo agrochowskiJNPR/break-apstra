@@ -105,15 +105,16 @@ curl -s -k --location --request POST "https://$apstraserver/api/blueprints/$bpid
 }
 commitcurrent()
 {
-commitversion=`curl -s -k --location --request GET "https://$apstraserver/api/blueprints/$bpid/deploy" --header "AUTHTOKEN: $authtoken" | jq .version --raw-output`
+commitversion=`curl -s -k --location --request GET "https://$apstraserver/api/blueprints/" --header "AUTHTOKEN: $authtoken" | jq '.items[] .version'  --raw-output`
 echo "version is $commitversion"
-curl -s -k --location -g --request PUT "https://$apstraserver/api/$bpid/deploy" \
+#curl -s -k -v --location  --request PUT "https://$apstraserver/api/$bpid/deploy" --header "AUTHTOKEN: $authtoken" --header 'Content-Type: application/json' --data-raw '{ "description": "committed by Apstra Chaos Cat at `date`"}'
+curl -k --location -g --request PUT "https://$apstraserver/api/blueprints/$bpid/deploy" \
 --header "AUTHTOKEN: $authtoken" \
---header 'Content-Type: application/json' \
---data-raw '{
-    "version": "$commitversion",
-    "description": "committed by Apstra Chaos Cat at `date`"
-}'
+--header "Content-Type: application/json" \
+--data-raw "{
+    \"version\": "$commitversion",
+    \"description\": \"Committed by script at `date`\"
+}"
 }
 
 setstaticrt() {
