@@ -135,6 +135,8 @@ sshpass -proot123 ssh -o StrictHostKeyChecking=no root@$switch_ip 'dd if=/dev/ze
 }
 
 rebootall() {
+declare -A switches `curl -s -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/qe?type=staging" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"query\": \"match(node('system', name='system', role=is_in(['leaf', 'access', 'spine', 'superspine'])))\"}" | jq -r '.items[].system | "switches" + "[" + .label + "]" + "=" + .system_id' |tr '\n' ' '`
+
 for dev in "${switches[@]}";
 do
         switch_ip=`curl -k --location --request GET "https://$apstraserver/api/systems/$dev" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq -r '.facts .mgmt_ipaddr'`;
