@@ -17,3 +17,14 @@ Try to peg the CPU of a device (sends cat /dev/zero > /dev/null on a chosen swit
 Change Blueprint Name - set the blueprint to a friendly name for demo purposes
 Save Current Blueprint Version (creates a time voyager saved blueprint that can be reverted to after thoroughly breaking your env)
 (not currently working) Run a commit (Send a commit so any of the above changes will be committed without using the Web UI)
+
+
+Usage:
+download the raw file to an Apstra VM.  
+Verify that the Apstra password is correct, or change it to the password of your instance.
+Run it 
+```
+wget <github raw file link>
+vi apstrachaostcat.sh 
+bash apstrachaoscat.sh
+```
