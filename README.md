@@ -17,7 +17,7 @@ jq is also available by default on the pre-packaged Apstra VM.
 
 - Change Blueprint Name - set the blueprint to a friendly name for demo purposes
 - Save Current Blueprint Version (creates a time voyager saved blueprint that can be reverted to after thoroughly breaking your env)
-- (not currently working) Run a commit (Send a commit so any of the above changes will be committed without using the Web UI)
+- Run a commit (Send a commit so any of the above changes will be committed without using the Web UI)
 
 
 # Usage:
