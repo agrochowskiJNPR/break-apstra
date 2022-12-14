@@ -1,9 +1,10 @@
 #!/bin/bash
 
 apstraserver="127.0.0.1"
+apstrapass="admin"
 authtoken=`curl -s -k --location --request POST "https://$apstraserver/api/user/login" --header 'Content-Type: application/json' --data-raw '{
   "username": "admin",
-  "password": "admin"
+  "password": "$apstrapass"
 }' | awk '{print $2}' | sed s/[\"\,]//g`
 echo "authtoken is $authtoken"
 bpid=`curl -s -k --location --request GET "https://$apstraserver/api/blueprints/" --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
@@ -12,7 +13,7 @@ echo "blueprint id is $bpid"
 get_bp_id() { #change me to change bp id
 authtoken=`curl -s -k --location --request POST "https://$apstraserver/api/user/login" --header 'Content-Type: application/json' --data-raw '{
   "username": "admin",
-  "password": "admin"
+  "password": "$apstrapass"
 }' | awk '{print $2}' | sed s/[\"\,]//g`
 echo "authtoken is $authtoken"
 bpid=`curl -s -k --location --request GET "https://$apstraserver/api/blueprints/" --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
@@ -134,15 +135,14 @@ sshpass -proot123 ssh -o StrictHostKeyChecking=no root@$switch_ip 'dd if=/dev/ze
 }
 
 rebootall() {
-declare -A switches `curl -s -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/qe?type=staging" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"query\": \"match(node('system', name='system', role=is_in(['leaf', 'access', 'spine', 'superspine'])))\"}" | jq -r '.items[].system | "switches" + "[" + .label + "]" + "=" + .system_id' |tr '\n' ' '`
-
-
-for dev in "${!switches[@]}";
-do 
-	switch_ip=`curl -k --location --request GET "https://$apstraserver/api/systems/${switches["$target"]}" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq -r '.facts .mgmt_ipaddr'`;
+for dev in "${switches[@]}";
+do
+        switch_ip=`curl -k --location --request GET "https://$apstraserver/api/systems/$dev" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq -r '.facts .mgmt_ipaddr'`;
         ( echo 'request system reboot' echo 'yes' echo 'quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
+        echo $switch_ip
 done
 }
+
 
 
 TITLE="How Would You Like to Break Your Environment Today?"
