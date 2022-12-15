@@ -2,19 +2,19 @@
 
 apstraserver="127.0.0.1"
 apstrapass="admin"
-authtoken=`curl -s -k --location --request POST "https://$apstraserver/api/user/login" --header 'Content-Type: application/json' --data-raw '{
-  "username": "admin",
-  "password": "$apstrapass"
-}' | awk '{print $2}' | sed s/[\"\,]//g`
+authtoken=`curl -s -k --location --request POST "https://$apstraserver/api/user/login" --header 'Content-Type: application/json' --data-raw "{
+  \"username\": \"admin\",
+  \"password\": \"$apstrapass\"
+}" | awk '{print $2}' | sed s/[\"\,]//g`
 echo "authtoken is $authtoken"
 bpid=`curl -s -k --location --request GET "https://$apstraserver/api/blueprints/" --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
 echo "blueprint id is $bpid"
 
 get_bp_id() { #change me to change bp id
-authtoken=`curl -s -k --location --request POST "https://$apstraserver/api/user/login" --header 'Content-Type: application/json' --data-raw '{
-  "username": "admin",
-  "password": "$apstrapass"
-}' | awk '{print $2}' | sed s/[\"\,]//g`
+authtoken=`curl -s -k --location --request POST "https://$apstraserver/api/user/login" --header 'Content-Type: application/json' --data-raw "{
+  \"username\": \"admin\",
+  \"password\": \"$apstrapass\"
+}" | awk '{print $2}' | sed s/[\"\,]//g`
 echo "authtoken is $authtoken"
 bpid=`curl -s -k --location --request GET "https://$apstraserver/api/blueprints/" --header "AUTHTOKEN: $authtoken" |  /usr/bin/jq '.items[0] .id' --raw-output`
 echo "blueprint id is $bpid"
@@ -23,6 +23,7 @@ bp_node_id=`curl -s -k --location --request GET "https://$apstraserver/api/bluep
 echo "\n node id is $bp_node_id"
 curl -s -k --location --request PATCH "https://$apstraserver/api/blueprints/$bpid" --header "AUTHTOKEN: $authtoken" --header "Content-Type: application/json" --data-raw "{ \"nodes\": {\"$bp_node_id\" : { \"label\": \"$newbpname\"}}}"
 }
+
 
 getswitchinfo() {
 declare -A switches `curl -s -k --location --request POST "https://$apstraserver/api/blueprints/$bpid/qe?type=staging" \
