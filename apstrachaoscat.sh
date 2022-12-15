@@ -141,7 +141,7 @@ declare -A switches `curl -s -k --location --request POST "https://$apstraserver
 for dev in "${switches[@]}";
 do
         switch_ip=`curl -k --location --request GET "https://$apstraserver/api/systems/$dev" --header "AUTHTOKEN: $authtoken" --data-raw "" | jq -r '.facts .mgmt_ipaddr'`;
-        ( echo 'request system reboot' echo 'yes' echo 'quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
+        ( echo 'request system reboot'; echo 'yes'; echo 'quit' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
         echo $switch_ip
 done
 }
