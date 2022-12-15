@@ -29,3 +29,6 @@ wget <github raw file link>
 vi apstrachaostcat.sh 
 bash apstrachaoscat.sh
 ```
+
+<img width="714" alt="image" src="https://user-images.githubusercontent.com/100955679/207923689-9593fbe2-f3d4-4b22-bdfd-4932c5aff2e9.png">
+
