@@ -156,11 +156,10 @@ items=(1 "Change Blueprint Name"
        4 "Break Cabling Map"
        5 "Change the ASN of a device"
        6 "Add a static route to a device"
-       7 "List Switch IPs"
-       8 "Flap xe-0/0/0 on selected device"
-       9 "Ramp a device CPU to raise device Health anomaly"
-       10 "Run a Commit"
-       11 "reboot all junos devices under Apstra management"
+       7 "Flap xe-0/0/0 on selected device"
+       8 "Ramp a device CPU to raise device Health anomaly"
+       9 "Run a Commit"
+       10 "reboot all junos devices under Apstra management"
        )
 
 while choice=$(dialog --title "$TITLE" \
@@ -174,11 +173,10 @@ while choice=$(dialog --title "$TITLE" \
 	4) breakcablemap ; sleep 4 ;;
 	5) changeswasn ; sleep 4 ;;
 	6) setstaticrt ; sleep 2 ;;
-	7) getswitchinfo ;  ;;
-	8) flapif ; sleep 2 ;;
-	9) rampcpu ; ;; 
-	10) commitcurrent ; sleep 5 ;;
-	11) rebootall ; sleep 3 ;;
+	7) flapif ; sleep 2 ;;
+	8) rampcpu ; ;; 
+	9) commitcurrent ; sleep 5 ;;
+	10) rebootall ; sleep 3 ;;
         *) ;; # some action on other
     esac
 done
