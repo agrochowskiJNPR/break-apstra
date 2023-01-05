@@ -120,9 +120,9 @@ curl -k --location -g --request PUT "https://$apstraserver/api/blueprints/$bpid/
 }
 
 setstaticrt() {
-( 
+
 getswitchinfo
-echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
+(echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
 }
 flapif() {
 getswitchinfo
