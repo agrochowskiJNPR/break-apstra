@@ -121,9 +121,10 @@ curl -k --location -g --request PUT "https://$apstraserver/api/blueprints/$bpid/
 
 setstaticrt() {
 
-getswitchinfo
-(echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8' ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
+getswitchinfo 
+(echo 'conf';echo 'set routing-options static route 7.7.7.7/32 next-hop 8.8.8.8';echo 'commit and-quit ) | sshpass -proot123 ssh -o StrictHostKeyChecking=no root@"$switch_ip" "cli"
 }
+
 flapif() {
 getswitchinfo
 echo "NB: This is a pretty bad hack, and will continue rapidly flapping the interface until you hit Control-C.  Please also be advised that it might leave the IF in a down state when you do stop it. If that happens either reboot the switch, or login and kill flap.sh (ps aux | grep flap.sh, and kill the PID)"
