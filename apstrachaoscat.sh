@@ -159,7 +159,7 @@ items=(1 "Change Blueprint Name"
        6 "Add a static route to a device"
        7 "Flap xe-0/0/0 on selected device"
        8 "Ramp a device CPU to raise device Health anomaly"
-       9 "Run a Commit"
+       9 "Commit Apstra Blueprint"
        10 "reboot all junos devices under Apstra management"
        )
 
