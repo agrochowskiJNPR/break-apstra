@@ -152,7 +152,7 @@ done
 TITLE="How Would You Like to Break Your Environment Today?"
 	
 items=(1 "Change Blueprint Name"
-       2 "Disable switch Interface (xe-0/0/0)"
+       2 "Disable switch Interface (xe-0/0/1)"
        3 "Save Current Blueprint Version"
        4 "Break Cabling Map"
        5 "Change the ASN of a device"
