@@ -3,7 +3,7 @@
 Written in bash so it's extremely portable, the only dependency is 'jq' (https://stedolan.github.io/jq/) which allows parsing of json files on the command line.  
 jq is also available by default on the pre-packaged Apstra VM.
 
-# This script has 7 scenarios, that work either by sending commands to an Apstra managed Junos device, or to the Apstra API itself.
+# This script has 9 scenarios, that work either by sending commands to an Apstra managed Junos device, or to the Apstra API itself.
 
 - Disable switch IF (send a set xe-0/0/0 disable to the switch of your choosing
 - Break Cabling Map (Change the Spine/Leaf connection spine1<->evpn_esi_001_leaf2 to use a port which will break the cable map)
