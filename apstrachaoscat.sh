@@ -151,16 +151,16 @@ done
 
 TITLE="How Would You Like to Break Your Environment Today?"
 	
-items=(1 "Change Blueprint Name"
-       2 "Disable switch Interface (xe-0/0/1)"
-       3 "Save Current Blueprint Version"
-       4 "Break Cabling Map"
-       5 "Change the ASN of a device"
-       6 "Add a static route to a device"
-       7 "Flap xe-0/0/0 on selected device"
-       8 "Ramp a device CPU to raise device Health anomaly"
-       9 "Commit Apstra Blueprint"
-       10 "reboot all junos devices under Apstra management"
+items=(  1 "Save Current Blueprint Version"
+         2 "Commit Apstra Blueprint"
+	 3 "Break Cabling Map"
+         4 "Change Blueprint Name"
+	 5 "Disable switch Interface xe-0/0/1"
+	 6 "Change the ASN of a device"
+	 7 "Add a static route to a device"
+         8 "Ramp a device CPU to raise device Health anomaly"
+         9 "Flap xe-0/0/0 on selected device"
+	10 "reboot all junos devices under Apstra management"
        )
 
 while choice=$(dialog --title "$TITLE" \
@@ -168,17 +168,17 @@ while choice=$(dialog --title "$TITLE" \
                  2>&1 >/dev/tty)
     do
     case $choice in
-	1) get_bp_id; sleep 3 ;; # some action on 2
-	2) disableint ;sleep 4 ;;
-	3) savetv; sleep 1 ;;
-	4) breakcablemap ; sleep 4 ;;
-	5) changeswasn ; sleep 4 ;;
-	6) setstaticrt ; sleep 2 ;;
-	7) flapif ; sleep 2 ;;
+    	1) savetv; sleep 1 ;;
+	2) commitcurrent ; sleep 5 ;;
+	3) breakcablemap ; sleep 4 ;;
+	4) get_bp_id; sleep 3 ;;
+	5) disableint ;sleep 4 ;;
+	6) changeswasn ; sleep 4 ;;
+	7) setstaticrt ; sleep 2 ;;
 	8) rampcpu ; ;; 
-	9) commitcurrent ; sleep 5 ;;
+	9) flapif ; sleep 2 ;;
 	10) rebootall ; sleep 3 ;;
-        *) ;; # some action on other
+        *) ;; 
     esac
 done
 #clear # clear after user pressed Cancel
